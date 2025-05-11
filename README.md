@@ -127,3 +127,4 @@ routes/
 - The docker file docker-compose.yml
 - The Architecture Diagram Event Booking.png
 - The pagination and filtering Pagination and Filtering.docx
+- The Serverless Notification approach with diagram Serverless Notification.docx
