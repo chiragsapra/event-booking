@@ -118,4 +118,9 @@ routes/
 - Admin dashboard
 - Filtering and pagination
 
+---
 
+## 📝 Notes
+- The Authentication & Authorization implementation is not done but the achieve the same please refer to 🔐Authentication.docx
+- The postman collection json file is also included as event-booking-api.postman_collection.json that can be import to postman application.
+- The testing approach is also included as Testing Approach.docx
