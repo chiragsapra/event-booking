@@ -69,3 +69,40 @@ cp .env.example .env
 php artisan key:generate
 php artisan migrate
 php artisan serve
+
+
+## 🧪 Testing the API
+
+- Import the provided Postman collection
+- Set Postman environment variable base_url to:
+http://localhost:8000/api
+
+## 🧱 Database Structure
+Tables:
+- events – Event metadata with capacity & time
+- attendees – People registering to attend
+- bookings – Links attendees to events
+
+Validation & Constraints:
+- Prevent double booking
+- Enforce capacity limit on events
+- Validate input using Laravels FormRequest or validate() methods
+
+## 📂 Project Structure (Key Folders)
+
+app/
+├── Models/              # Eloquent models
+├── Http/
+│   ├── Controllers/     # Event, Attendee, Booking Controllers
+│   └── Middleware/      # (Optional: Sanctum auth)
+routes/
+└── api.php              # API Routes
+
+## 🧩 Future Improvements
+
+- Email notifications for booking
+- Soft deletes for attendees/events
+- Admin dashboard
+- Filtering and pagination
+
+
