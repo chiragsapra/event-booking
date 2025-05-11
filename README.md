@@ -69,13 +69,20 @@ cp .env.example .env
 php artisan key:generate
 php artisan migrate
 php artisan serve
+```
 
+---
 
 ## 🧪 Testing the API
 
 - Import the provided Postman collection
 - Set Postman environment variable base_url to:
+
+```url
 http://localhost:8000/api
+```
+
+---
 
 ## 🧱 Database Structure
 Tables:
@@ -88,8 +95,11 @@ Validation & Constraints:
 - Enforce capacity limit on events
 - Validate input using Laravels FormRequest or validate() methods
 
+---
+
 ## 📂 Project Structure (Key Folders)
 
+```structure
 app/
 ├── Models/              # Eloquent models
 ├── Http/
@@ -97,6 +107,9 @@ app/
 │   └── Middleware/      # (Optional: Sanctum auth)
 routes/
 └── api.php              # API Routes
+```
+
+---
 
 ## 🧩 Future Improvements
 
