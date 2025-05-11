@@ -122,5 +122,7 @@ routes/
 
 ## 📝 Notes
 - The Authentication & Authorization implementation is not done but the achieve the same please refer to 🔐Authentication.docx
-- The postman collection json file is also included as event-booking-api.postman_collection.json that can be import to postman application.
-- The testing approach is also included as Testing Approach.docx
+- The postman collection json file event-booking-api.postman_collection.json that can be import to postman application.
+- The testing approachs Testing Approach.docx
+- The docker file docker-compose.yml
+- The Architecture Diagram Event Booking.png
