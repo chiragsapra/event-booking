@@ -126,3 +126,4 @@ routes/
 - The testing approachs Testing Approach.docx
 - The docker file docker-compose.yml
 - The Architecture Diagram Event Booking.png
+- The pagination and filtering Pagination and Filtering.docx
