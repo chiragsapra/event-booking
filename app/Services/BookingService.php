@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Services;
 
 use App\Models\Booking;
@@ -8,16 +7,39 @@ use Illuminate\Validation\ValidationException;
 
 class BookingService
 {
-    public function book(Event $event, array $data): Booking
+    public function list(int $perPage = 10)
     {
+        return Booking::with(['event', 'attendee'])->paginate($perPage);
+    }
+
+    public function create(Event $event, int $attendeeId): Booking
+    {
+        if ($event->bookings()->where('attendee_id', $attendeeId)->exists()) {
+            throw ValidationException::withMessages([
+                'attendee_id' => ['This attendee has already booked this event.'],
+            ]);
+        }
+
         if ($event->bookings()->count() >= $event->capacity) {
-            throw ValidationException::withMessages(['event' => 'Event is fully booked']);
+            throw ValidationException::withMessages([
+                'event_id' => ['This event is fully booked.'],
+            ]);
         }
 
-        if ($event->bookings()->where('attendee_id', $data['attendee_id'])->exists()) {
-            throw ValidationException::withMessages(['attendee_id' => 'Attendee already booked for this event']);
-        }
+        return Booking::create([
+            'event_id' => $event->id,
+            'attendee_id' => $attendeeId,
+        ]);
+    }
 
-        return $event->bookings()->create($data);
+    public function update(Booking $booking, array $data): Booking
+    {
+        $booking->update($data);
+        return $booking;
+    }
+
+    public function delete(Booking $booking): void
+    {
+        $booking->delete();
     }
 }

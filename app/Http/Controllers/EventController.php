@@ -44,6 +44,6 @@ class EventController extends Controller
     public function destroy(Event $event)
     {
         $this->eventService->delete($event);
-        return $this->success(null, 'Event deleted successfully', 204);
+        return $this->success(null, 'Event deleted successfully');
     }
 }
