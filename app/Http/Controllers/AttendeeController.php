@@ -1,78 +1,24 @@
 <?php
-
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Attendee;
+use App\Http\Requests\StoreAttendeeRequest;
+use App\Services\AttendeeService;
+use App\Traits\ApiResponse;
 
 class AttendeeController extends Controller
 {
-    /**
-     * List all attendees.
-     */
-    public function index()
+    use ApiResponse;
+
+    protected $attendeeService;
+
+    public function __construct(AttendeeService $attendeeService)
     {
-        return response()->json(Attendee::all(), 200);
+        $this->attendeeService = $attendeeService;
     }
 
-    /**
-     * Register a new attendee.
-     */
-    public function store(Request $request)
+    public function store(StoreAttendeeRequest $request)
     {
-        $validated = $request->validate([
-            'name'  => 'required|string|max:255',
-            'email' => 'required|email|unique:attendees,email'
-        ], [
-            'name.required'  => 'Attendee name is required.',
-            'email.required' => 'Email address is required.',
-            'email.email'    => 'Email must be valid.',
-            'email.unique'   => 'This email is already registered.',
-        ]);
-
-        $attendee = Attendee::create($validated);
-
-        return response()->json([
-            'message'  => 'Attendee registered successfully.',
-            'attendee' => $attendee
-        ], 201);
-    }
-
-    /**
-     * Show a specific attendee.
-     */
-    public function show(Attendee $attendee)
-    {
-        return response()->json($attendee, 200);
-    }
-
-    /**
-     * Update attendee info.
-     */
-    public function update(Request $request, Attendee $attendee)
-    {
-        $validated = $request->validate([
-            'name'  => 'sometimes|required|string|max:255',
-            'email' => 'sometimes|required|email|unique:attendees,email,' . $attendee->id
-        ]);
-
-        $attendee->update($validated);
-
-        return response()->json([
-            'message'  => 'Attendee updated successfully.',
-            'attendee' => $attendee
-        ], 200);
-    }
-
-    /**
-     * Delete an attendee.
-     */
-    public function destroy(Attendee $attendee)
-    {
-        $attendee->delete();
-
-        return response()->json([
-            'message' => 'Attendee deleted successfully.'
-        ], 200);
+        $attendee = $this->attendeeService->register($request->validated());
+        return $this->success($attendee, 'Attendee registered successfully', 201);
     }
 }

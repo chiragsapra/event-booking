@@ -1,93 +1,49 @@
 <?php
-
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\StoreEventRequest;
+use App\Http\Requests\UpdateEventRequest;
 use App\Models\Event;
+use App\Services\EventService;
+use App\Traits\ApiResponse;
 
 class EventController extends Controller
 {
-    /**
-     * Display a listing of events.
-     */
+    use ApiResponse;
+
+    protected $eventService;
+
+    public function __construct(EventService $eventService)
+    {
+        $this->eventService = $eventService;
+    }
+
     public function index()
     {
-        return Event::all();
+        $events = $this->eventService->list(request()->all(), request('per_page', 10));
+        return $this->success($events);
     }
 
-    /**
-     * Store a newly created event.
-     */
-    public function store(Request $request)
+    public function store(StoreEventRequest $request)
     {
-        $validated = $request->validate([
-            'name'        => 'required|string|max:255',
-            'description' => 'required|string',
-            'country'     => 'required|string|max:255',
-            'start_time'  => 'required|date',
-            'end_time'    => 'required|date|after:start_time',
-            'capacity'    => 'required|integer|min:1'
-        ], [
-            'name.required'       => 'The event name is required.',
-            'country.required'    => 'Please specify the country.',
-            'start_time.required' => 'Start time is required.',
-            'end_time.required'   => 'End time is required.',
-            'end_time.after'      => 'End time must be after the start time.',
-            'capacity.required'   => 'Please set a capacity.',
-            'capacity.min'        => 'Capacity must be at least 1.',
-        ]);
-
-        $event = Event::create($validated);
-
-        return response()->json([
-            'message' => 'Event created successfully.',
-            'event'   => $event
-        ], 201);
+        $event = $this->eventService->create($request->validated());
+        return $this->success($event, 'Event created successfully', 201);
     }
 
-    /**
-     * Display the specified event.
-     */
     public function show(Event $event)
     {
-        return $event;
+        return $this->success($event);
     }
 
-    /**
-     * Update the specified event.
-     */
-    public function update(Request $request, Event $event)
+    public function update(UpdateEventRequest $request, Event $event)
     {
-        $validated = $request->validate([
-            'name'        => 'sometimes|required|string|max:255',
-            'description' => 'nullable|string',
-            'country'     => 'sometimes|required|string|max:255',
-            'start_time'  => 'sometimes|required|date',
-            'end_time'    => 'sometimes|required|date|after:start_time',
-            'capacity'    => 'sometimes|required|integer|min:1',
-        ], [
-            'end_time.after'    => 'End time must be after the start time.',
-            'capacity.min'      => 'Capacity must be at least 1.',
-        ]);
-
-
-        $event->update($validated);
-
-        return response()->json([
-            'message' => 'Event updated successfully.',
-            'event'   => $event
-        ]);
+        $event = $this->eventService->update($event, $request->validated());
+        return $this->success($event, 'Event updated successfully');
     }
 
-    /**
-     * Remove the specified event.
-     */
     public function destroy(Event $event)
     {
-        $event->delete();
-
-        return response()->json([
-            'message' => 'Event deleted successfully.'
-        ]);
+        $this->eventService->delete($event);
+        return $this->success(null, 'Event deleted successfully', 204);
     }
 }
