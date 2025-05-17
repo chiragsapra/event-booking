@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreBookingRequest;
+use App\Http\Resources\BookingResource;
 use App\Models\Booking;
 use App\Models\Event;
 use App\Services\BookingService;
@@ -19,7 +20,7 @@ class BookingController extends Controller
     public function index(): JsonResponse
     {
         $bookings = $this->bookingService->list();
-        return response()->json(['data' => $bookings]);
+        return response()->json(['data' => BookingResource::collection($bookings)]);
     }
 
     public function store(StoreBookingRequest $request): JsonResponse
@@ -29,13 +30,13 @@ class BookingController extends Controller
             $request->attendee_id
         );
 
-        return response()->json(['data' => $booking], 201);
+        return response()->json(['data' => new BookingResource($booking)], 201);
     }
 
     public function update(StoreBookingRequest $request, Booking $booking): JsonResponse
     {
         $updated = $this->bookingService->update($booking, $request->validated());
-        return response()->json(['data' => $updated]);
+        return response()->json(['data' => new BookingResource($booking)]);
     }
 
     public function destroy(Booking $booking): JsonResponse

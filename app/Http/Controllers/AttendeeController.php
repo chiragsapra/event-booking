@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreAttendeeRequest;
 use App\Http\Requests\UpdateAttendeeRequest;
+use App\Http\Resources\AttendeeResource;
 use App\Models\Attendee;
 use App\Traits\ApiResponse;
 use App\Services\AttendeeService;
@@ -22,24 +23,25 @@ class AttendeeController extends Controller
     public function index(): JsonResponse
     {
         $attendees = $this->attendeeService->list();
-        return response()->json(['data' => $attendees]);
+        return response()->json(['data' => AttendeeResource::collection($attendees)]);
     }
+
 
     public function show(Attendee $Attendee)
     {
-        return $this->success($Attendee);
+        return response()->json(['data' => new AttendeeResource($Attendee)]);
     }
 
     public function store(StoreAttendeeRequest $request): JsonResponse
     {
         $attendee = $this->attendeeService->create($request->validated());
-        return response()->json(['data' => $attendee], 201);
+        return response()->json(['data' => new AttendeeResource($attendee)], 201);
     }
 
-    public function update(UpdateAttendeeRequest $request, Attendee $attendee): JsonResponse
+    public function update(UpdateAttendeeRequest $request, $id): JsonResponse
     {
-        $updated = $this->attendeeService->update($attendee, $request->validated());
-        return response()->json(['data' => $updated]);
+        $attendee = $this->attendeeService->update($id, $request->validated());
+        return response()->json(['data' => new AttendeeResource($attendee)]);
     }
 
     public function destroy(Attendee $attendee): JsonResponse
